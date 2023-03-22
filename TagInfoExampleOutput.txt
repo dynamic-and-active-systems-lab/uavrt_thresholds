@@ -1,4 +1,0 @@
-# id, name, freq_hz, ip_msecs_1, ip_msecs_1_id, ip_msecs_2, ip_msecs_2_id, pulse_width_msecs, ip_uncertainty_msecs, ip_jitter_msecs, k, false_alarm
-# Note: id's start at 2 and must be even numbers
-2,Telonics,146000000,1333,M,2000,R,15,60,20,3,0.005,-64137.095041,3923.730468,-65784.122571,3951.694684
-2,Telonics,146000000,1333,M,2000,R,15,60,20,3,0.005,-64145.426578,3938.359708,-65769.375780,4020.310847
