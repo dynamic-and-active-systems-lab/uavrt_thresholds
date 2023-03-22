@@ -36,11 +36,11 @@ Temporary Items
 
 
 # Matlab Coder Generated Files
-codegen
 msgdef
 ReportInfo.mat
 analyze_pulse_train_data.m
 *.o
+*.prj
 
 # Other files
 Build
