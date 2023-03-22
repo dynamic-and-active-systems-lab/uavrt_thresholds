@@ -11,7 +11,7 @@
 // Include Files
 #include "thresholdGeneratorSingleTrial.h"
 #include "eml_int_forloop_overflow_check.h"
-#include "sparse.h"
+#include "sparse1.h"
 #include "thresholdGeneratorSingleTrial_internal_types.h"
 #include "coder_array.h"
 #include <cmath>
