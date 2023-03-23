@@ -2,14 +2,14 @@
 // Academic License - for use in teaching, academic research, and meeting
 // course requirements at degree granting institutions only.  Not for
 // government, commercial, or other organizational use.
-// File: stft.h
+// File: computeDFT.h
 //
 // MATLAB Coder version            : 5.4
 // C/C++ source code generated on  : 23-Mar-2023 08:53:28
 //
 
-#ifndef STFT_H
-#define STFT_H
+#ifndef COMPUTEDFT_H
+#define COMPUTEDFT_H
 
 // Include Files
 #include "rtwtypes.h"
@@ -19,17 +19,15 @@
 
 // Function Declarations
 namespace coder {
-void stft(const ::coder::array<creal_T, 2U> &x, double varargin_1,
-          const ::coder::array<double, 1U> &varargin_3, double varargin_5,
-          double varargin_7, ::coder::array<creal_T, 3U> &varargout_1,
-          ::coder::array<double, 1U> &varargout_2,
-          ::coder::array<double, 1U> &varargout_3);
+void computeDFT(const ::coder::array<creal_T, 3U> &xin, double nfft,
+                double varargin_1, ::coder::array<creal_T, 3U> &Xx,
+                ::coder::array<double, 1U> &f);
 
 }
 
 #endif
 //
-// File trailer for stft.h
+// File trailer for computeDFT.h
 //
 // [EOF]
 //

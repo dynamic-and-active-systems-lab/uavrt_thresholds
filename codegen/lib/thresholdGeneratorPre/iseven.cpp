@@ -5,17 +5,14 @@
 // File: iseven.cpp
 //
 // MATLAB Coder version            : 5.4
-// C/C++ source code generated on  : 22-Mar-2023 15:24:14
+// C/C++ source code generated on  : 23-Mar-2023 08:53:28
 //
 
 // Include Files
 #include "iseven.h"
 #include "rt_nonfinite.h"
 #include "thresholdGeneratorPre_types.h"
-#include "omp.h"
 #include <cmath>
-#include <cstdio>
-#include <cstdlib>
 #include <sstream>
 #include <stdexcept>
 #include <string.h>
@@ -32,18 +29,11 @@ static void o_rtErrorWithMessageID(const char *aFcnName, int aLineNum);
 //
 static void o_rtErrorWithMessageID(const char *aFcnName, int aLineNum)
 {
-  std::string errMsg;
   std::stringstream outStream;
   outStream << "Argument must be integer-valued.";
   outStream << "\n";
   ((((outStream << "Error in ") << aFcnName) << " (line ") << aLineNum) << ")";
-  if (omp_in_parallel()) {
-    errMsg = outStream.str();
-    std::fprintf(stderr, "%s", errMsg.c_str());
-    std::abort();
-  } else {
-    throw std::runtime_error(outStream.str());
-  }
+  throw std::runtime_error(outStream.str());
 }
 
 //

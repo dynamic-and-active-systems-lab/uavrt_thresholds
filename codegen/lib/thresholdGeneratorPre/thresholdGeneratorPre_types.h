@@ -5,7 +5,7 @@
 // File: thresholdGeneratorPre_types.h
 //
 // MATLAB Coder version            : 5.4
-// C/C++ source code generated on  : 22-Mar-2023 15:24:14
+// C/C++ source code generated on  : 23-Mar-2023 08:53:28
 //
 
 #ifndef THRESHOLDGENERATORPRE_TYPES_H
@@ -13,7 +13,6 @@
 
 // Include Files
 #include "rtwtypes.h"
-#define MAX_THREADS omp_get_max_threads()
 
 // Type Definitions
 struct rtEqualityCheckInfo {

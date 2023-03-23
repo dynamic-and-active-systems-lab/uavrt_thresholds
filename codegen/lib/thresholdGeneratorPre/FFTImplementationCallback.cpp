@@ -5,7 +5,7 @@
 // File: FFTImplementationCallback.cpp
 //
 // MATLAB Coder version            : 5.4
-// C/C++ source code generated on  : 22-Mar-2023 15:24:14
+// C/C++ source code generated on  : 23-Mar-2023 08:53:28
 //
 
 // Include Files
@@ -16,7 +16,6 @@
 #include "thresholdGeneratorPre_rtwutil.h"
 #include "thresholdGeneratorPre_types.h"
 #include "coder_array.h"
-#include "omp.h"
 #include <cmath>
 #include <string.h>
 
@@ -41,24 +40,25 @@ void FFTImplementationCallback::dobluesteinfft(
 {
   array<creal_T, 1U> fv;
   array<creal_T, 1U> fy;
-  array<creal_T, 1U> r;
   array<creal_T, 1U> wwc;
-  double a_im;
-  double a_re;
-  double b_re_tmp;
-  double re_tmp;
-  int b_k;
-  int b_y;
-  int i;
-  int i1;
+  double nt_im;
+  double nt_re;
+  int a;
+  int b;
+  int iy;
+  int j;
+  int k;
   int minNrowsNx;
   int nChan;
   int nInt2;
   int nInt2m1;
+  int nRowsD2;
+  int nRowsD4;
+  int nRowsM2;
   int rt;
-  int u0;
-  int xoff;
-  nChan = x.size(1) * x.size(2);
+  boolean_T b_overflow;
+  boolean_T c_overflow;
+  boolean_T overflow;
   nInt2m1 = (nfft + nfft) - 1;
   if (nInt2m1 < 0) {
     rtNonNegativeError(static_cast<double>(nInt2m1), &emlrtDCI);
@@ -71,14 +71,12 @@ void FFTImplementationCallback::dobluesteinfft(
   if (nfft - 1 > 2147483646) {
     check_forloop_overflow_error();
   }
-  for (int k{0}; k <= nfft - 2; k++) {
-    double nt_im;
-    double nt_re;
-    b_y = ((k + 1) << 1) - 1;
-    if (nInt2 - rt <= b_y) {
-      rt += b_y - nInt2;
+  for (k = 0; k <= nfft - 2; k++) {
+    iy = ((k + 1) << 1) - 1;
+    if (nInt2 - rt <= iy) {
+      rt += iy - nInt2;
     } else {
-      rt += b_y;
+      rt += iy;
     }
     nt_im = -3.1415926535897931 * static_cast<double>(rt) /
             static_cast<double>(nfft);
@@ -89,104 +87,185 @@ void FFTImplementationCallback::dobluesteinfft(
       nt_re = std::cos(nt_im);
       nt_im = std::sin(nt_im);
     }
-    i = (nfft - k) - 2;
-    wwc[i].re = nt_re;
-    wwc[i].im = -nt_im;
+    j = (nfft - k) - 2;
+    wwc[j].re = nt_re;
+    wwc[j].im = -nt_im;
   }
-  i = nInt2m1 - 1;
-  for (int k{i}; k >= nfft; k--) {
+  j = nInt2m1 - 1;
+  for (k = j; k >= nfft; k--) {
     wwc[k] = wwc[(nInt2m1 - k) - 1];
   }
-  nInt2m1 = x.size(0);
+  nChan = x.size(1) * x.size(2);
   y.set_size(nfft, x.size(1), x.size(2));
   if (nfft > x.size(0)) {
     y.set_size(nfft, x.size(1), x.size(2));
-    b_y = nfft * x.size(1) * x.size(2);
-    for (i = 0; i < b_y; i++) {
-      y[i].re = 0.0;
-      y[i].im = 0.0;
+    iy = nfft * x.size(1) * x.size(2);
+    for (j = 0; j < iy; j++) {
+      y[j].re = 0.0;
+      y[j].im = 0.0;
     }
+  }
+  minNrowsNx = x.size(0);
+  if (nfft <= minNrowsNx) {
+    minNrowsNx = nfft;
   }
   if (nChan > 2147483646) {
     check_forloop_overflow_error();
   }
-  b_y = nChan - 1;
-#pragma omp parallel for num_threads(omp_get_max_threads()) private(           \
-    fv, fy, r, xoff, i1, minNrowsNx, b_k, u0, a_re, a_im, re_tmp, b_re_tmp)
-
-  for (int chan = 0; chan <= b_y; chan++) {
-    xoff = chan * nInt2m1;
-    r.set_size(nfft);
-    if (nfft > x.size(0)) {
-      r.set_size(nfft);
-      for (i1 = 0; i1 < nfft; i1++) {
-        r[i1].re = 0.0;
-        r[i1].im = 0.0;
+  if (nChan - 1 >= 0) {
+    overflow = (minNrowsNx > 2147483646);
+    a = minNrowsNx + 1;
+    b_overflow = ((minNrowsNx + 1 <= nfft) && (nfft > 2147483646));
+    nRowsM2 = n2blue - 2;
+    nRowsD2 = n2blue / 2;
+    nRowsD4 = nRowsD2 / 2;
+    b = wwc.size(0);
+    c_overflow = ((nfft <= wwc.size(0)) && (wwc.size(0) > 2147483646));
+  }
+  for (int chan{0}; chan < nChan; chan++) {
+    double b_nt_re_tmp;
+    double twid_im;
+    double twid_re;
+    int i;
+    int nt_re_tmp;
+    int yoff;
+    yoff = chan * nfft;
+    nInt2m1 = chan * x.size(0);
+    if (overflow) {
+      check_forloop_overflow_error();
+    }
+    for (k = 0; k < minNrowsNx; k++) {
+      nt_re_tmp = (nfft + k) - 1;
+      nt_re = wwc[nt_re_tmp].re;
+      nt_im = wwc[nt_re_tmp].im;
+      j = nInt2m1 + k;
+      iy = yoff + k;
+      y[iy].re = nt_re * x[j].re + nt_im * x[j].im;
+      y[iy].im = nt_re * x[j].im - nt_im * x[j].re;
+    }
+    if (b_overflow) {
+      check_forloop_overflow_error();
+    }
+    for (k = a; k <= nfft; k++) {
+      j = (yoff + k) - 1;
+      y[j].re = 0.0;
+      y[j].im = 0.0;
+    }
+    fy.set_size(n2blue);
+    if (n2blue > y.size(0)) {
+      fy.set_size(n2blue);
+      for (j = 0; j < n2blue; j++) {
+        fy[j].re = 0.0;
+        fy[j].im = 0.0;
       }
     }
-    minNrowsNx = x.size(0);
-    if (nfft <= minNrowsNx) {
-      minNrowsNx = nfft;
+    iy = y.size(0);
+    nInt2 = n2blue;
+    if (iy <= n2blue) {
+      nInt2 = iy;
     }
-    if (minNrowsNx > 2147483646) {
+    iy = 0;
+    rt = 0;
+    if (nInt2 - 1 > 2147483646) {
       check_forloop_overflow_error();
     }
-    for (b_k = 0; b_k < minNrowsNx; b_k++) {
-      u0 = (nfft + b_k) - 1;
-      a_re = wwc[u0].re;
-      a_im = wwc[u0].im;
-      i1 = xoff + b_k;
-      r[b_k].re = a_re * x[i1].re + a_im * x[i1].im;
-      r[b_k].im = a_re * x[i1].im - a_im * x[i1].re;
+    for (i = 0; i <= nInt2 - 2; i++) {
+      boolean_T tst;
+      fy[iy] = y[yoff + i];
+      nInt2m1 = n2blue;
+      tst = true;
+      while (tst) {
+        nInt2m1 >>= 1;
+        rt ^= nInt2m1;
+        tst = ((rt & nInt2m1) == 0);
+      }
+      iy = rt;
     }
-    u0 = minNrowsNx + 1;
-    if ((minNrowsNx + 1 <= nfft) && (nfft > 2147483646)) {
-      check_forloop_overflow_error();
+    fy[iy] = y[(yoff + nInt2) - 1];
+    if (n2blue > 1) {
+      for (i = 0; i <= nRowsM2; i += 2) {
+        b_nt_re_tmp = fy[i + 1].re;
+        nt_im = fy[i + 1].im;
+        twid_im = fy[i].re;
+        nt_re = fy[i].im;
+        fy[i + 1].re = twid_im - b_nt_re_tmp;
+        fy[i + 1].im = nt_re - nt_im;
+        fy[i].re = twid_im + b_nt_re_tmp;
+        fy[i].im = nt_re + nt_im;
+      }
     }
-    for (b_k = u0; b_k <= nfft; b_k++) {
-      r[b_k - 1].re = 0.0;
-      r[b_k - 1].im = 0.0;
+    nInt2m1 = 2;
+    rt = 4;
+    k = nRowsD4;
+    nInt2 = ((nRowsD4 - 1) << 2) + 1;
+    while (k > 0) {
+      for (i = 0; i < nInt2; i += rt) {
+        nt_re_tmp = i + nInt2m1;
+        nt_re = fy[nt_re_tmp].re;
+        nt_im = fy[nt_re_tmp].im;
+        fy[nt_re_tmp].re = fy[i].re - nt_re;
+        fy[nt_re_tmp].im = fy[i].im - nt_im;
+        fy[i].re = fy[i].re + nt_re;
+        fy[i].im = fy[i].im + nt_im;
+      }
+      iy = 1;
+      for (j = k; j < nRowsD2; j += k) {
+        int ihi;
+        twid_re = costab[j];
+        twid_im = sintab[j];
+        i = iy;
+        ihi = iy + nInt2;
+        while (i < ihi) {
+          nt_re_tmp = i + nInt2m1;
+          b_nt_re_tmp = fy[nt_re_tmp].im;
+          nt_im = fy[nt_re_tmp].re;
+          nt_re = twid_re * nt_im - twid_im * b_nt_re_tmp;
+          nt_im = twid_re * b_nt_re_tmp + twid_im * nt_im;
+          fy[nt_re_tmp].re = fy[i].re - nt_re;
+          fy[nt_re_tmp].im = fy[i].im - nt_im;
+          fy[i].re = fy[i].re + nt_re;
+          fy[i].im = fy[i].im + nt_im;
+          i += rt;
+        }
+        iy++;
+      }
+      k /= 2;
+      nInt2m1 = rt;
+      rt += rt;
+      nInt2 -= nInt2m1;
     }
-    FFTImplementationCallback::r2br_r2dit_trig_impl(r, n2blue, costab, sintab,
-                                                    fy);
     FFTImplementationCallback::r2br_r2dit_trig_impl(wwc, n2blue, costab, sintab,
                                                     fv);
-    u0 = fy.size(0);
-    for (i1 = 0; i1 < u0; i1++) {
-      a_re = fy[i1].re;
-      a_im = fv[i1].im;
-      re_tmp = fy[i1].im;
-      b_re_tmp = fv[i1].re;
-      fy[i1].re = a_re * b_re_tmp - re_tmp * a_im;
-      fy[i1].im = a_re * a_im + re_tmp * b_re_tmp;
+    iy = fy.size(0);
+    for (j = 0; j < iy; j++) {
+      twid_im = fy[j].re;
+      nt_im = fv[j].im;
+      nt_re = fy[j].im;
+      twid_re = fv[j].re;
+      fy[j].re = twid_im * twid_re - nt_re * nt_im;
+      fy[j].im = twid_im * nt_im + nt_re * twid_re;
     }
     FFTImplementationCallback::r2br_r2dit_trig_impl(fy, n2blue, costab,
                                                     sintabinv, fv);
     if (fv.size(0) > 1) {
-      a_re = 1.0 / static_cast<double>(fv.size(0));
-      u0 = fv.size(0);
-      for (i1 = 0; i1 < u0; i1++) {
-        fv[i1].re = a_re * fv[i1].re;
-        fv[i1].im = a_re * fv[i1].im;
+      nt_im = 1.0 / static_cast<double>(fv.size(0));
+      iy = fv.size(0);
+      for (j = 0; j < iy; j++) {
+        fv[j].re = nt_im * fv[j].re;
+        fv[j].im = nt_im * fv[j].im;
       }
     }
-    u0 = wwc.size(0);
-    if ((nfft <= wwc.size(0)) && (wwc.size(0) > 2147483646)) {
+    if (c_overflow) {
       check_forloop_overflow_error();
     }
-    for (b_k = nfft; b_k <= u0; b_k++) {
-      a_re = wwc[b_k - 1].re;
-      a_im = fv[b_k - 1].im;
-      re_tmp = wwc[b_k - 1].im;
-      b_re_tmp = fv[b_k - 1].re;
-      i1 = b_k - nfft;
-      r[i1].re = a_re * b_re_tmp + re_tmp * a_im;
-      r[i1].im = a_re * a_im - re_tmp * b_re_tmp;
-    }
-    xoff = y.size(0);
-    u0 = r.size(0);
-    for (i1 = 0; i1 < u0; i1++) {
-      y[i1 + xoff * chan] = r[i1];
+    for (k = nfft; k <= b; k++) {
+      nt_im = wwc[k - 1].re;
+      nt_re = fv[k - 1].im;
+      twid_re = wwc[k - 1].im;
+      twid_im = fv[k - 1].re;
+      j = (yoff + k) - nfft;
+      y[j].re = nt_im * twid_im + twid_re * nt_re;
+      y[j].im = nt_im * nt_re - twid_re * twid_im;
     }
   }
 }
@@ -321,151 +400,6 @@ void FFTImplementationCallback::get_algo_sizes(int nfft, boolean_T useRadix2,
       rtErrorWithMessageID(e_emlrtRTEI.fName, e_emlrtRTEI.lineNo);
     }
     *nRows = *n2blue;
-  }
-}
-
-//
-// Arguments    : const ::coder::array<creal_T, 3U> &x
-//                int n1_unsigned
-//                const ::coder::array<double, 2U> &costab
-//                const ::coder::array<double, 2U> &sintab
-//                ::coder::array<creal_T, 3U> &y
-// Return Type  : void
-//
-void FFTImplementationCallback::r2br_r2dit_trig(
-    const ::coder::array<creal_T, 3U> &x, int n1_unsigned,
-    const ::coder::array<double, 2U> &costab,
-    const ::coder::array<double, 2U> &sintab, ::coder::array<creal_T, 3U> &y)
-{
-  array<creal_T, 1U> r;
-  double temp_im;
-  double temp_re;
-  double temp_re_tmp;
-  double twid_im;
-  double twid_re;
-  int b_i;
-  int b_temp_re_tmp;
-  int iDelta2;
-  int iheight;
-  int iy;
-  int j;
-  int ju;
-  int k;
-  int nChan;
-  int nRowsD2;
-  int nrows;
-  int xoff;
-  boolean_T tst;
-  nChan = x.size(1) * x.size(2);
-  nrows = x.size(0);
-  y.set_size(n1_unsigned, x.size(1), x.size(2));
-  if (n1_unsigned > x.size(0)) {
-    int loop_ub;
-    y.set_size(n1_unsigned, x.size(1), x.size(2));
-    loop_ub = n1_unsigned * x.size(1) * x.size(2);
-    for (int i{0}; i < loop_ub; i++) {
-      y[i].re = 0.0;
-      y[i].im = 0.0;
-    }
-  }
-  if (nChan > 2147483646) {
-    check_forloop_overflow_error();
-  }
-  nChan--;
-#pragma omp parallel for num_threads(omp_get_max_threads()) private(           \
-    r, xoff, iheight, iy, j, nRowsD2, k, ju, b_i, iDelta2, tst, temp_re_tmp,   \
-    temp_im, temp_re, twid_re, b_temp_re_tmp, twid_im)
-
-  for (int chan = 0; chan <= nChan; chan++) {
-    xoff = chan * nrows;
-    r.set_size(n1_unsigned);
-    if (n1_unsigned > x.size(0)) {
-      r.set_size(n1_unsigned);
-      for (iheight = 0; iheight < n1_unsigned; iheight++) {
-        r[iheight].re = 0.0;
-        r[iheight].im = 0.0;
-      }
-    }
-    iy = x.size(0);
-    j = n1_unsigned;
-    if (iy <= n1_unsigned) {
-      j = iy;
-    }
-    iheight = n1_unsigned - 2;
-    nRowsD2 = n1_unsigned / 2;
-    k = nRowsD2 / 2;
-    iy = 0;
-    ju = 0;
-    if (j - 1 > 2147483646) {
-      check_forloop_overflow_error();
-    }
-    for (b_i = 0; b_i <= j - 2; b_i++) {
-      r[iy] = x[xoff + b_i];
-      iDelta2 = n1_unsigned;
-      tst = true;
-      while (tst) {
-        iDelta2 >>= 1;
-        ju ^= iDelta2;
-        tst = ((ju & iDelta2) == 0);
-      }
-      iy = ju;
-    }
-    r[iy] = x[(xoff + j) - 1];
-    if (n1_unsigned > 1) {
-      for (b_i = 0; b_i <= iheight; b_i += 2) {
-        temp_re_tmp = r[b_i + 1].re;
-        temp_im = r[b_i + 1].im;
-        temp_re = r[b_i].re;
-        twid_re = r[b_i].im;
-        r[b_i + 1].re = temp_re - temp_re_tmp;
-        r[b_i + 1].im = twid_re - temp_im;
-        r[b_i].re = temp_re + temp_re_tmp;
-        r[b_i].im = twid_re + temp_im;
-      }
-    }
-    iy = 2;
-    iDelta2 = 4;
-    iheight = ((k - 1) << 2) + 1;
-    while (k > 0) {
-      for (b_i = 0; b_i < iheight; b_i += iDelta2) {
-        b_temp_re_tmp = b_i + iy;
-        temp_re = r[b_temp_re_tmp].re;
-        temp_im = r[b_temp_re_tmp].im;
-        r[b_temp_re_tmp].re = r[b_i].re - temp_re;
-        r[b_temp_re_tmp].im = r[b_i].im - temp_im;
-        r[b_i].re = r[b_i].re + temp_re;
-        r[b_i].im = r[b_i].im + temp_im;
-      }
-      ju = 1;
-      for (j = k; j < nRowsD2; j += k) {
-        twid_re = costab[j];
-        twid_im = sintab[j];
-        b_i = ju;
-        xoff = ju + iheight;
-        while (b_i < xoff) {
-          b_temp_re_tmp = b_i + iy;
-          temp_re_tmp = r[b_temp_re_tmp].im;
-          temp_im = r[b_temp_re_tmp].re;
-          temp_re = twid_re * temp_im - twid_im * temp_re_tmp;
-          temp_im = twid_re * temp_re_tmp + twid_im * temp_im;
-          r[b_temp_re_tmp].re = r[b_i].re - temp_re;
-          r[b_temp_re_tmp].im = r[b_i].im - temp_im;
-          r[b_i].re = r[b_i].re + temp_re;
-          r[b_i].im = r[b_i].im + temp_im;
-          b_i += iDelta2;
-        }
-        ju++;
-      }
-      k /= 2;
-      iy = iDelta2;
-      iDelta2 += iDelta2;
-      iheight -= iy;
-    }
-    iy = y.size(0);
-    iDelta2 = r.size(0);
-    for (iheight = 0; iheight < iDelta2; iheight++) {
-      y[iheight + iy * chan] = r[iheight];
-    }
   }
 }
 

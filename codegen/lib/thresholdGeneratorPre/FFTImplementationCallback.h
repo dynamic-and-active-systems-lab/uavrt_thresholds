@@ -5,7 +5,7 @@
 // File: FFTImplementationCallback.h
 //
 // MATLAB Coder version            : 5.4
-// C/C++ source code generated on  : 22-Mar-2023 15:24:14
+// C/C++ source code generated on  : 23-Mar-2023 08:53:28
 //
 
 #ifndef FFTIMPLEMENTATIONCALLBACK_H
@@ -33,11 +33,6 @@ public:
                                    const ::coder::array<double, 2U> &costab,
                                    const ::coder::array<double, 2U> &sintab,
                                    ::coder::array<creal_T, 1U> &y);
-  static void r2br_r2dit_trig(const ::coder::array<creal_T, 3U> &x,
-                              int n1_unsigned,
-                              const ::coder::array<double, 2U> &costab,
-                              const ::coder::array<double, 2U> &sintab,
-                              ::coder::array<creal_T, 3U> &y);
   static void dobluesteinfft(const ::coder::array<creal_T, 3U> &x, int n2blue,
                              int nfft, const ::coder::array<double, 2U> &costab,
                              const ::coder::array<double, 2U> &sintab,

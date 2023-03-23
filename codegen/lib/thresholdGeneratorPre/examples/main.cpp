@@ -5,7 +5,7 @@
 // File: main.cpp
 //
 // MATLAB Coder version            : 5.4
-// C/C++ source code generated on  : 22-Mar-2023 15:24:14
+// C/C++ source code generated on  : 23-Mar-2023 08:53:28
 //
 
 /*************************************************************************/
@@ -41,9 +41,6 @@
 #include "thresholdGeneratorPre_terminate.h"
 #include "thresholdGeneratorPre_types.h"
 #include "coder_array.h"
-#include "omp.h"
-#include <cstdio>
-#include <cstdlib>
 #include <sstream>
 #include <stdexcept>
 #include <string.h>
@@ -91,18 +88,11 @@ static void main_thresholdGeneratorPre()
 //
 static void q_rtErrorWithMessageID(const char *aFcnName, int aLineNum)
 {
-  std::string errMsg;
   std::stringstream outStream;
   outStream << "Example main does not support command line arguments.";
   outStream << "\n";
   ((((outStream << "Error in ") << aFcnName) << " (line ") << aLineNum) << ")";
-  if (omp_in_parallel()) {
-    errMsg = outStream.str();
-    std::fprintf(stderr, "%s", errMsg.c_str());
-    std::abort();
-  } else {
-    throw std::runtime_error(outStream.str());
-  }
+  throw std::runtime_error(outStream.str());
 }
 
 //

@@ -5,7 +5,7 @@
 // File: thresholdGeneratorPre.cpp
 //
 // MATLAB Coder version            : 5.4
-// C/C++ source code generated on  : 22-Mar-2023 15:24:14
+// C/C++ source code generated on  : 23-Mar-2023 08:53:28
 //
 
 // Include Files
@@ -27,10 +27,7 @@
 #include "weightingmatrix.h"
 #include "wgn.h"
 #include "coder_array.h"
-#include "omp.h"
 #include <cmath>
-#include <cstdio>
-#include <cstdlib>
 #include <sstream>
 #include <stdexcept>
 #include <stdio.h>
@@ -59,18 +56,11 @@ static double rt_hypotd_snf(double u0, double u1);
 //
 static void b_rtErrorWithMessageID(const char *aFcnName, int aLineNum)
 {
-  std::string errMsg;
   std::stringstream outStream;
   outStream << "To RESHAPE the number of elements must not change.";
   outStream << "\n";
   ((((outStream << "Error in ") << aFcnName) << " (line ") << aLineNum) << ")";
-  if (omp_in_parallel()) {
-    errMsg = outStream.str();
-    std::fprintf(stderr, "%s", errMsg.c_str());
-    std::abort();
-  } else {
-    throw std::runtime_error(outStream.str());
-  }
+  throw std::runtime_error(outStream.str());
 }
 
 //
@@ -112,7 +102,6 @@ static void binary_expand_op(coder::array<double, 1U> &in1,
 //
 static void c_rtErrorWithMessageID(const char *aFcnName, int aLineNum)
 {
-  std::string errMsg;
   std::stringstream outStream;
   outStream
       << "To RESHAPE the number of elements must not change, and if the input "
@@ -120,13 +109,7 @@ static void c_rtErrorWithMessageID(const char *aFcnName, int aLineNum)
          "nless the output size is fixed.";
   outStream << "\n";
   ((((outStream << "Error in ") << aFcnName) << " (line ") << aLineNum) << ")";
-  if (omp_in_parallel()) {
-    errMsg = outStream.str();
-    std::fprintf(stderr, "%s", errMsg.c_str());
-    std::abort();
-  } else {
-    throw std::runtime_error(outStream.str());
-  }
+  throw std::runtime_error(outStream.str());
 }
 
 //
@@ -138,18 +121,11 @@ static void c_rtErrorWithMessageID(const char *aFcnName, int aLineNum)
 static void rtErrorWithMessageID(const char *r, const char *aFcnName,
                                  int aLineNum)
 {
-  std::string errMsg;
   std::stringstream outStream;
   ((outStream << "Order, ") << r) << ", must be finite.";
   outStream << "\n";
   ((((outStream << "Error in ") << aFcnName) << " (line ") << aLineNum) << ")";
-  if (omp_in_parallel()) {
-    errMsg = outStream.str();
-    std::fprintf(stderr, "%s", errMsg.c_str());
-    std::abort();
-  } else {
-    throw std::runtime_error(outStream.str());
-  }
+  throw std::runtime_error(outStream.str());
 }
 
 //

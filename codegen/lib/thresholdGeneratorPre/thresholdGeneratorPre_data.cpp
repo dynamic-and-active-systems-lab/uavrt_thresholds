@@ -5,7 +5,7 @@
 // File: thresholdGeneratorPre_data.cpp
 //
 // MATLAB Coder version            : 5.4
-// C/C++ source code generated on  : 22-Mar-2023 15:24:14
+// C/C++ source code generated on  : 23-Mar-2023 08:53:28
 //
 
 // Include Files
@@ -16,8 +16,6 @@
 
 // Variable Definitions
 unsigned int state[625];
-
-omp_nest_lock_t thresholdGeneratorPre_nestLockGlobal;
 
 rtRunTimeErrorInfo b_emlrtRTEI{
     64,                  // lineNo

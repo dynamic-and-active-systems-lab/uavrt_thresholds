@@ -5,17 +5,14 @@
 // File: thresholdGeneratorPre_rtwutil.cpp
 //
 // MATLAB Coder version            : 5.4
-// C/C++ source code generated on  : 22-Mar-2023 15:24:14
+// C/C++ source code generated on  : 23-Mar-2023 08:53:28
 //
 
 // Include Files
 #include "thresholdGeneratorPre_rtwutil.h"
 #include "rt_nonfinite.h"
 #include "thresholdGeneratorPre_types.h"
-#include "omp.h"
 #include <cmath>
-#include <cstdio>
-#include <cstdlib>
 #include <sstream>
 #include <stdexcept>
 #include <string.h>
@@ -29,18 +26,11 @@
 //
 void e_rtErrorWithMessageID(const char *aFcnName, int aLineNum)
 {
-  std::string errMsg;
   std::stringstream outStream;
   outStream << "Maximum variable size allowed by the program is exceeded.";
   outStream << "\n";
   ((((outStream << "Error in ") << aFcnName) << " (line ") << aLineNum) << ")";
-  if (omp_in_parallel()) {
-    errMsg = outStream.str();
-    std::fprintf(stderr, "%s", errMsg.c_str());
-    std::abort();
-  } else {
-    throw std::runtime_error(outStream.str());
-  }
+  throw std::runtime_error(outStream.str());
 }
 
 //
@@ -52,7 +42,6 @@ void e_rtErrorWithMessageID(const char *aFcnName, int aLineNum)
 void emlrtDimSizeImpxCheckR2021b(const int aDim1, const int aDim2,
                                  const rtEqualityCheckInfo *aInfo)
 {
-  std::string errMsg;
   std::stringstream outStream;
   ((((((outStream << "Size mismatch error on dimension ") << aInfo->nDims)
       << ": expected ")
@@ -63,13 +52,7 @@ void emlrtDimSizeImpxCheckR2021b(const int aDim1, const int aDim2,
   outStream << "\n";
   ((((outStream << "Error in ") << aInfo->fName) << " (line ") << aInfo->lineNo)
       << ")";
-  if (omp_in_parallel()) {
-    errMsg = outStream.str();
-    std::fprintf(stderr, "%s", errMsg.c_str());
-    std::abort();
-  } else {
-    throw std::runtime_error(outStream.str());
-  }
+  throw std::runtime_error(outStream.str());
 }
 
 //
@@ -79,7 +62,6 @@ void emlrtDimSizeImpxCheckR2021b(const int aDim1, const int aDim2,
 //
 void g_rtErrorWithMessageID(const char *aFcnName, int aLineNum)
 {
-  std::string errMsg;
   std::stringstream outStream;
   outStream
       << "The dimension to operate along was selected automatically, is "
@@ -88,13 +70,7 @@ void g_rtErrorWithMessageID(const char *aFcnName, int aLineNum)
          "DIM argument.";
   outStream << "\n";
   ((((outStream << "Error in ") << aFcnName) << " (line ") << aLineNum) << ")";
-  if (omp_in_parallel()) {
-    errMsg = outStream.str();
-    std::fprintf(stderr, "%s", errMsg.c_str());
-    std::abort();
-  } else {
-    throw std::runtime_error(outStream.str());
-  }
+  throw std::runtime_error(outStream.str());
 }
 
 //
@@ -107,8 +83,6 @@ void g_rtErrorWithMessageID(const char *aFcnName, int aLineNum)
 void rtDynamicBoundsError(int aIndexValue, int aLoBound, int aHiBound,
                           const rtBoundsCheckInfo *aInfo)
 {
-  std::string b_errMsg;
-  std::string errMsg;
   std::stringstream b_outStream;
   std::stringstream outStream;
   if (aLoBound == 0) {
@@ -128,13 +102,7 @@ void rtDynamicBoundsError(int aIndexValue, int aLoBound, int aHiBound,
     ((((b_outStream << "Error in ") << aInfo->fName) << " (line ")
      << aInfo->lineNo)
         << ")";
-    if (omp_in_parallel()) {
-      b_errMsg = b_outStream.str();
-      std::fprintf(stderr, "%s", b_errMsg.c_str());
-      std::abort();
-    } else {
-      throw std::runtime_error(b_outStream.str());
-    }
+    throw std::runtime_error(b_outStream.str());
   } else {
     ((((((((outStream << "Index exceeds array dimensions. Index value ")
            << aIndexValue)
@@ -149,13 +117,7 @@ void rtDynamicBoundsError(int aIndexValue, int aLoBound, int aHiBound,
     ((((outStream << "Error in ") << aInfo->fName) << " (line ")
      << aInfo->lineNo)
         << ")";
-    if (omp_in_parallel()) {
-      errMsg = outStream.str();
-      std::fprintf(stderr, "%s", errMsg.c_str());
-      std::abort();
-    } else {
-      throw std::runtime_error(outStream.str());
-    }
+    throw std::runtime_error(outStream.str());
   }
 }
 
@@ -167,7 +129,6 @@ void rtDynamicBoundsError(int aIndexValue, int aLoBound, int aHiBound,
 //
 void rtErrorWithMessageID(const int i, const char *aFcnName, int aLineNum)
 {
-  std::string errMsg;
   std::stringstream outStream;
   ((((outStream << "Size argument must be an integer in the range: ") << i)
     << " to ")
@@ -175,13 +136,7 @@ void rtErrorWithMessageID(const int i, const char *aFcnName, int aLineNum)
       << ".";
   outStream << "\n";
   ((((outStream << "Error in ") << aFcnName) << " (line ") << aLineNum) << ")";
-  if (omp_in_parallel()) {
-    errMsg = outStream.str();
-    std::fprintf(stderr, "%s", errMsg.c_str());
-    std::abort();
-  } else {
-    throw std::runtime_error(outStream.str());
-  }
+  throw std::runtime_error(outStream.str());
 }
 
 //
@@ -191,18 +146,11 @@ void rtErrorWithMessageID(const int i, const char *aFcnName, int aLineNum)
 //
 void rtErrorWithMessageID(const char *aFcnName, int aLineNum)
 {
-  std::string errMsg;
   std::stringstream outStream;
   outStream << "Assertion failed.";
   outStream << "\n";
   ((((outStream << "Error in ") << aFcnName) << " (line ") << aLineNum) << ")";
-  if (omp_in_parallel()) {
-    errMsg = outStream.str();
-    std::fprintf(stderr, "%s", errMsg.c_str());
-    std::abort();
-  } else {
-    throw std::runtime_error(outStream.str());
-  }
+  throw std::runtime_error(outStream.str());
 }
 
 //
@@ -228,7 +176,6 @@ std::string rtGenSizeString(const int aNDims, const int *aDims)
 //
 void rtIntegerError(const double aInteger, const rtDoubleCheckInfo *aInfo)
 {
-  std::string errMsg;
   std::stringstream outStream;
   ((outStream << "Expected a value representable in the C type \'int\'. Found ")
    << aInteger)
@@ -236,13 +183,7 @@ void rtIntegerError(const double aInteger, const rtDoubleCheckInfo *aInfo)
   outStream << "\n";
   ((((outStream << "Error in ") << aInfo->fName) << " (line ") << aInfo->lineNo)
       << ")";
-  if (omp_in_parallel()) {
-    errMsg = outStream.str();
-    std::fprintf(stderr, "%s", errMsg.c_str());
-    std::abort();
-  } else {
-    throw std::runtime_error(outStream.str());
-  }
+  throw std::runtime_error(outStream.str());
 }
 
 //
@@ -261,7 +202,6 @@ boolean_T rtIsNullOrEmptyString(const char *aString)
 //
 void rtNonNegativeError(const double aPositive, const rtDoubleCheckInfo *aInfo)
 {
-  std::string errMsg;
   std::stringstream outStream;
   ((outStream << "Value ") << aPositive)
       << " is not greater than or equal to zero.\nExiting to prevent memory "
@@ -269,13 +209,7 @@ void rtNonNegativeError(const double aPositive, const rtDoubleCheckInfo *aInfo)
   outStream << "\n";
   ((((outStream << "Error in ") << aInfo->fName) << " (line ") << aInfo->lineNo)
       << ")";
-  if (omp_in_parallel()) {
-    errMsg = outStream.str();
-    std::fprintf(stderr, "%s", errMsg.c_str());
-    std::abort();
-  } else {
-    throw std::runtime_error(outStream.str());
-  }
+  throw std::runtime_error(outStream.str());
 }
 
 //
@@ -287,19 +221,12 @@ void rtNonNegativeError(const double aPositive, const rtDoubleCheckInfo *aInfo)
 void rtSizeEq1DError(const int aDim1, const int aDim2,
                      const rtEqualityCheckInfo *aInfo)
 {
-  std::string errMsg;
   std::stringstream outStream;
   ((((outStream << "Sizes mismatch: ") << aDim1) << " ~= ") << aDim2) << ".";
   outStream << "\n";
   ((((outStream << "Error in ") << aInfo->fName) << " (line ") << aInfo->lineNo)
       << ")";
-  if (omp_in_parallel()) {
-    errMsg = outStream.str();
-    std::fprintf(stderr, "%s", errMsg.c_str());
-    std::abort();
-  } else {
-    throw std::runtime_error(outStream.str());
-  }
+  throw std::runtime_error(outStream.str());
 }
 
 //
@@ -314,7 +241,6 @@ void rtSubAssignSizeCheck(const int *aDims1, const int aNDims1,
                           const int *aDims2, const int aNDims2,
                           const rtEqualityCheckInfo *aInfo)
 {
-  std::string errMsg;
   std::stringstream outStream;
   int i;
   int j;
@@ -344,13 +270,7 @@ void rtSubAssignSizeCheck(const int *aDims1, const int aNDims1,
       ((((outStream << "Error in ") << aInfo->fName) << " (line ")
        << aInfo->lineNo)
           << ")";
-      if (omp_in_parallel()) {
-        errMsg = outStream.str();
-        std::fprintf(stderr, "%s", errMsg.c_str());
-        std::abort();
-      } else {
-        throw std::runtime_error(outStream.str());
-      }
+      throw std::runtime_error(outStream.str());
     }
     i++;
     j++;

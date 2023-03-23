@@ -5,7 +5,7 @@
 // File: thresholdGeneratorPre_initialize.cpp
 //
 // MATLAB Coder version            : 5.4
-// C/C++ source code generated on  : 22-Mar-2023 15:24:14
+// C/C++ source code generated on  : 23-Mar-2023 08:53:28
 //
 
 // Include Files
@@ -13,7 +13,6 @@
 #include "eml_rand_mt19937ar_stateful.h"
 #include "rt_nonfinite.h"
 #include "thresholdGeneratorPre_data.h"
-#include "omp.h"
 #include <string.h>
 
 // Function Definitions
@@ -23,7 +22,6 @@
 //
 void thresholdGeneratorPre_initialize()
 {
-  omp_init_nest_lock(&thresholdGeneratorPre_nestLockGlobal);
   eml_rand_mt19937ar_stateful_init();
   isInitialized_thresholdGeneratorPre = true;
 }

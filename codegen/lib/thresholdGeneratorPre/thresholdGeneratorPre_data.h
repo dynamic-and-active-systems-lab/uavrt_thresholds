@@ -5,7 +5,7 @@
 // File: thresholdGeneratorPre_data.h
 //
 // MATLAB Coder version            : 5.4
-// C/C++ source code generated on  : 22-Mar-2023 15:24:14
+// C/C++ source code generated on  : 23-Mar-2023 08:53:28
 //
 
 #ifndef THRESHOLDGENERATORPRE_DATA_H
@@ -14,13 +14,11 @@
 // Include Files
 #include "rtwtypes.h"
 #include "thresholdGeneratorPre_types.h"
-#include "omp.h"
 #include <cstddef>
 #include <cstdlib>
 
 // Variable Declarations
 extern unsigned int state[625];
-extern omp_nest_lock_t thresholdGeneratorPre_nestLockGlobal;
 extern rtRunTimeErrorInfo b_emlrtRTEI;
 extern rtRunTimeErrorInfo c_emlrtRTEI;
 extern rtRunTimeErrorInfo d_emlrtRTEI;

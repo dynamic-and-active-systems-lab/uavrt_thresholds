@@ -16,6 +16,7 @@ cfg.MaxIdLength = 1024;
 cfg.ReportPotentialDifferences = false;
 cfg.TargetLangStandard = 'C++11 (ISO)';
 cfg.RuntimeChecks = true;
+cfg.EnableOpenMP = false;
 
 ARGS = cell(1,1);
 ARGS{1} = cell(6,1);

@@ -5,7 +5,7 @@
 // File: centerest.cpp
 //
 // MATLAB Coder version            : 5.4
-// C/C++ source code generated on  : 22-Mar-2023 15:24:14
+// C/C++ source code generated on  : 23-Mar-2023 08:53:28
 //
 
 // Include Files
@@ -15,10 +15,7 @@
 #include "rt_nonfinite.h"
 #include "thresholdGeneratorPre_types.h"
 #include "coder_array.h"
-#include "omp.h"
 #include <cmath>
-#include <cstdio>
-#include <cstdlib>
 #include <sstream>
 #include <stdexcept>
 #include <string.h>
@@ -41,18 +38,11 @@ static void t_rtErrorWithMessageID(const char *aFcnName, int aLineNum);
 //
 static void b_rtDivisionByZeroErrorN()
 {
-  std::string errMsg;
   std::stringstream outStream;
   outStream << "Division by zero detected.\nEarly termination due to division "
                "by zero.";
   outStream << "\n";
-  if (omp_in_parallel()) {
-    errMsg = outStream.str();
-    std::fprintf(stderr, "%s", errMsg.c_str());
-    std::abort();
-  } else {
-    throw std::runtime_error(outStream.str());
-  }
+  throw std::runtime_error(outStream.str());
 }
 
 //
@@ -104,7 +94,6 @@ static int div_s32_sat(int numerator, int denominator)
 static void rtErrorWithMessageID(const char *r, const char *r1,
                                  const char *aFcnName, int aLineNum)
 {
-  std::string errMsg;
   std::stringstream outStream;
   ((((outStream << "Invalid shift argument: must be a finite, real, integer "
                    "vector with entries between -intmax(\'")
@@ -114,13 +103,7 @@ static void rtErrorWithMessageID(const char *r, const char *r1,
       << "\').";
   outStream << "\n";
   ((((outStream << "Error in ") << aFcnName) << " (line ") << aLineNum) << ")";
-  if (omp_in_parallel()) {
-    errMsg = outStream.str();
-    std::fprintf(stderr, "%s", errMsg.c_str());
-    std::abort();
-  } else {
-    throw std::runtime_error(outStream.str());
-  }
+  throw std::runtime_error(outStream.str());
 }
 
 //
@@ -130,18 +113,11 @@ static void rtErrorWithMessageID(const char *r, const char *r1,
 //
 static void t_rtErrorWithMessageID(const char *aFcnName, int aLineNum)
 {
-  std::string errMsg;
   std::stringstream outStream;
   outStream << "Divide by zero.";
   outStream << "\n";
   ((((outStream << "Error in ") << aFcnName) << " (line ") << aLineNum) << ")";
-  if (omp_in_parallel()) {
-    errMsg = outStream.str();
-    std::fprintf(stderr, "%s", errMsg.c_str());
-    std::abort();
-  } else {
-    throw std::runtime_error(outStream.str());
-  }
+  throw std::runtime_error(outStream.str());
 }
 
 //

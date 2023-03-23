@@ -5,7 +5,7 @@
 // File: stftParser.cpp
 //
 // MATLAB Coder version            : 5.4
-// C/C++ source code generated on  : 22-Mar-2023 15:24:14
+// C/C++ source code generated on  : 23-Mar-2023 08:53:28
 //
 
 // Include Files
@@ -15,10 +15,7 @@
 #include "thresholdGeneratorPre_internal_types.h"
 #include "thresholdGeneratorPre_types.h"
 #include "coder_array.h"
-#include "omp.h"
 #include <cmath>
-#include <cstdio>
-#include <cstdlib>
 #include <sstream>
 #include <stdexcept>
 #include <string.h>
@@ -61,18 +58,11 @@ static void rtErrorWithMessageID(const long long i, const char *aFcnName,
 static void b_rtErrorWithMessageID(const char *r, const char *aFcnName,
                                    int aLineNum)
 {
-  std::string errMsg;
   std::stringstream outStream;
   ((outStream << "Expected ") << r) << " to be nonempty.";
   outStream << "\n";
   ((((outStream << "Error in ") << aFcnName) << " (line ") << aLineNum) << ")";
-  if (omp_in_parallel()) {
-    errMsg = outStream.str();
-    std::fprintf(stderr, "%s", errMsg.c_str());
-    std::abort();
-  } else {
-    throw std::runtime_error(outStream.str());
-  }
+  throw std::runtime_error(outStream.str());
 }
 
 //
@@ -84,18 +74,11 @@ static void b_rtErrorWithMessageID(const char *r, const char *aFcnName,
 static void c_rtErrorWithMessageID(const char *r, const char *aFcnName,
                                    int aLineNum)
 {
-  std::string errMsg;
   std::stringstream outStream;
   ((outStream << "Expected ") << r) << " to be integer-valued.";
   outStream << "\n";
   ((((outStream << "Error in ") << aFcnName) << " (line ") << aLineNum) << ")";
-  if (omp_in_parallel()) {
-    errMsg = outStream.str();
-    std::fprintf(stderr, "%s", errMsg.c_str());
-    std::abort();
-  } else {
-    throw std::runtime_error(outStream.str());
-  }
+  throw std::runtime_error(outStream.str());
 }
 
 //
@@ -107,18 +90,11 @@ static void c_rtErrorWithMessageID(const char *r, const char *aFcnName,
 static void d_rtErrorWithMessageID(const char *r, const char *aFcnName,
                                    int aLineNum)
 {
-  std::string errMsg;
   std::stringstream outStream;
   ((outStream << "Expected ") << r) << " to be nonnegative.";
   outStream << "\n";
   ((((outStream << "Error in ") << aFcnName) << " (line ") << aLineNum) << ")";
-  if (omp_in_parallel()) {
-    errMsg = outStream.str();
-    std::fprintf(stderr, "%s", errMsg.c_str());
-    std::abort();
-  } else {
-    throw std::runtime_error(outStream.str());
-  }
+  throw std::runtime_error(outStream.str());
 }
 
 //
@@ -130,18 +106,11 @@ static void d_rtErrorWithMessageID(const char *r, const char *aFcnName,
 static void e_rtErrorWithMessageID(const char *r, const char *aFcnName,
                                    int aLineNum)
 {
-  std::string errMsg;
   std::stringstream outStream;
   ((outStream << "Expected ") << r) << " to be non-NaN.";
   outStream << "\n";
   ((((outStream << "Error in ") << aFcnName) << " (line ") << aLineNum) << ")";
-  if (omp_in_parallel()) {
-    errMsg = outStream.str();
-    std::fprintf(stderr, "%s", errMsg.c_str());
-    std::abort();
-  } else {
-    throw std::runtime_error(outStream.str());
-  }
+  throw std::runtime_error(outStream.str());
 }
 
 //
@@ -153,18 +122,11 @@ static void e_rtErrorWithMessageID(const char *r, const char *aFcnName,
 static void f_rtErrorWithMessageID(const char *r, const char *aFcnName,
                                    int aLineNum)
 {
-  std::string errMsg;
   std::stringstream outStream;
   ((outStream << "Expected ") << r) << " to be finite.";
   outStream << "\n";
   ((((outStream << "Error in ") << aFcnName) << " (line ") << aLineNum) << ")";
-  if (omp_in_parallel()) {
-    errMsg = outStream.str();
-    std::fprintf(stderr, "%s", errMsg.c_str());
-    std::abort();
-  } else {
-    throw std::runtime_error(outStream.str());
-  }
+  throw std::runtime_error(outStream.str());
 }
 
 //
@@ -176,18 +138,11 @@ static void f_rtErrorWithMessageID(const char *r, const char *aFcnName,
 static void g_rtErrorWithMessageID(const char *r, const char *aFcnName,
                                    int aLineNum)
 {
-  std::string errMsg;
   std::stringstream outStream;
   ((outStream << "Expected ") << r) << " to be positive.";
   outStream << "\n";
   ((((outStream << "Error in ") << aFcnName) << " (line ") << aLineNum) << ")";
-  if (omp_in_parallel()) {
-    errMsg = outStream.str();
-    std::fprintf(stderr, "%s", errMsg.c_str());
-    std::abort();
-  } else {
-    throw std::runtime_error(outStream.str());
-  }
+  throw std::runtime_error(outStream.str());
 }
 
 //
@@ -197,20 +152,13 @@ static void g_rtErrorWithMessageID(const char *r, const char *aFcnName,
 //
 static void n_rtErrorWithMessageID(const char *aFcnName, int aLineNum)
 {
-  std::string errMsg;
   std::stringstream outStream;
   outStream
       << "Input signal must be a real-valued vector, matrix, or timetable when "
          "\'FrequencyRange\' is specified as \'onesided\'.";
   outStream << "\n";
   ((((outStream << "Error in ") << aFcnName) << " (line ") << aLineNum) << ")";
-  if (omp_in_parallel()) {
-    errMsg = outStream.str();
-    std::fprintf(stderr, "%s", errMsg.c_str());
-    std::abort();
-  } else {
-    throw std::runtime_error(outStream.str());
-  }
+  throw std::runtime_error(outStream.str());
 }
 
 //
@@ -224,7 +172,6 @@ static void n_rtErrorWithMessageID(const char *aFcnName, int aLineNum)
 static void rtErrorWithMessageID(const char *r, const char *r1, const char *r2,
                                  const char *aFcnName, int aLineNum)
 {
-  std::string errMsg;
   std::stringstream outStream;
   ((((((outStream << "Expected ") << r) << " to be a scalar with value ") << r1)
     << " ")
@@ -232,13 +179,7 @@ static void rtErrorWithMessageID(const char *r, const char *r1, const char *r2,
       << ".";
   outStream << "\n";
   ((((outStream << "Error in ") << aFcnName) << " (line ") << aLineNum) << ")";
-  if (omp_in_parallel()) {
-    errMsg = outStream.str();
-    std::fprintf(stderr, "%s", errMsg.c_str());
-    std::abort();
-  } else {
-    throw std::runtime_error(outStream.str());
-  }
+  throw std::runtime_error(outStream.str());
 }
 
 //
@@ -250,7 +191,6 @@ static void rtErrorWithMessageID(const char *r, const char *r1, const char *r2,
 static void rtErrorWithMessageID(const long long i, const char *aFcnName,
                                  int aLineNum)
 {
-  std::string errMsg;
   std::stringstream outStream;
   ((outStream << "Input signal length must be greater than or equal to the "
                  "window length, ")
@@ -258,13 +198,7 @@ static void rtErrorWithMessageID(const long long i, const char *aFcnName,
       << ".";
   outStream << "\n";
   ((((outStream << "Error in ") << aFcnName) << " (line ") << aLineNum) << ")";
-  if (omp_in_parallel()) {
-    errMsg = outStream.str();
-    std::fprintf(stderr, "%s", errMsg.c_str());
-    std::abort();
-  } else {
-    throw std::runtime_error(outStream.str());
-  }
+  throw std::runtime_error(outStream.str());
 }
 
 //
